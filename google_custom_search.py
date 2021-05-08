@@ -1,12 +1,11 @@
 import os
 import urllib.request
 import json
+import config_cse
+GCS_KEY, GCS_CX = config_cse.varconf()
 
 path = os.path.dirname(__file__)+'/'
-#req = 'my%20little%20pony'                          # Search request
-GCS_KEY = 'xxx'  # Google Custom Search API key
-GCS_CX = 'zzz'         # search engine
-gcsMaxResults = 30 # should be < 100 and (%10 == 0)
+gcsMaxResults = 30  # should be < 100 and (%10 == 0)
 filename = 'gcsRes.json'
 
 def create_url(gcs_req, start=1):

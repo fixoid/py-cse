@@ -2,7 +2,7 @@ import os
 import sys
 import json
 sys.path.append(os.path.dirname(__file__)+'/..')
-from ws_snd import google_custom_search as gcs
+import google_custom_search as gcs
 
 links = []
 path = os.path.dirname(__file__)+'/'
