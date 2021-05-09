@@ -1,12 +1,7 @@
-import os
 import urllib.request
 import json
 import config_cse
 GCS_KEY, GCS_CX = config_cse.varconf()
-
-path = os.path.dirname(__file__)+'/'
-gcsMaxResults = 30  # should be < 100 and (%10 == 0)
-filename = 'gcsRes.json'
 
 def create_url(gcs_req, start=1):
     gcs_req = gcs_req.replace(' ','%20')
@@ -37,7 +32,7 @@ def get_json(gcs_req, mode='url', start=1, filename='gcsRes.json'):
         if page == 'connect error' or page == 'url error':
             page = ('{ "kind" : "'+page+'" }').encode('utf-8')
         if mode == 'save':
-            with open(path+filename, 'wb') as f:
+            with open(filename, 'wb') as f:
                 f.write(page)
         return page
     elif mode == 'file':
@@ -64,14 +59,15 @@ def page_links(dict):
         links.append(result['link'])
     return links
 
-def all_links(gcs_req, show_info=False):
+def all_links(gcs_req, pages_max=3, show_info=False, mode='url'):
     gcsDict = {}
     links = []
     resStart = 1
     first_page = True
-    while first_page == True or is_next_page(gcsDict) == True and next_page_start(gcsDict) < gcsMaxResults:
+    if (pages_max > 10): pages_max = 10     # limit of Google Custom Search API
+    while first_page == True or is_next_page(gcsDict) == True and next_page_start(gcsDict) < pages_max*10:
         if first_page == True: first_page = False
-        gcsDict = json.loads(get_json(gcs_req, 'save', resStart))
+        gcsDict = json.loads(get_json(gcs_req, mode, resStart))
         if (gcsDict['kind'] != 'connect error'):
             if total_results(gcsDict) > 0:
                 links += page_links(gcsDict)
